@@ -1,0 +1,640 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Expense Tracker</title>
+
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", sans-serif;
+      }
+
+      body {
+        min-height: 100vh;
+        padding: 30px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: auto;
+      }
+
+      h1 {
+        text-align: center;
+        color: white;
+        margin-bottom: 25px;
+        font-size: 40px;
+        font-weight: 700;
+        text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 20px;
+        padding: 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+      }
+
+      .card h2 {
+        color: white;
+      }
+
+      .dashboard {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 25px;
+        flex-wrap: wrap;
+      }
+
+      .box {
+        flex: 1;
+        min-width: 220px;
+
+        background: linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.25),
+          rgba(255, 255, 255, 0.1)
+        );
+
+        backdrop-filter: blur(20px);
+
+        border: 1px solid rgba(255, 255, 255, 0.3);
+
+        border-radius: 24px;
+
+        padding: 25px;
+
+        text-align: center;
+
+        color: white;
+
+        cursor: pointer;
+
+        transition: all 0.4s ease;
+
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+        position: relative;
+
+        overflow: hidden;
+      }
+
+      .box:hover {
+        transform: translateY(-12px) scale(1.04);
+
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      }
+
+      .box::before {
+        content: "";
+
+        position: absolute;
+
+        top: -50%;
+        left: -50%;
+
+        width: 200%;
+        height: 200%;
+
+        background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(255, 255, 255, 0.15),
+          transparent
+        );
+
+        transform: rotate(45deg);
+
+        transition: 0.8s;
+
+        opacity: 0;
+      }
+
+      .box:hover::before {
+        opacity: 1;
+
+        left: 100%;
+      }
+
+      .box h3 {
+        font-size: 18px;
+
+        letter-spacing: 1px;
+
+        opacity: 0.9;
+      }
+
+      .box h2 {
+        font-size: 34px;
+
+        font-weight: 700;
+
+        margin-top: 10px;
+      }
+
+      #income {
+        color: #00ff95;
+      }
+
+      #expense {
+        color: #ff6b6b;
+      }
+
+      #balance {
+        color: #ffd93d;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      input {
+        width: 100%;
+        padding: 14px;
+        border: none;
+        outline: none;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.9);
+        font-size: 15px;
+        transition: 0.3s;
+      }
+
+      input:focus {
+        transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+      }
+
+      button {
+        border: none;
+        padding: 12px 22px;
+        border-radius: 12px;
+        cursor: pointer;
+        font-size: 15px;
+        font-weight: 600;
+        transition: 0.3s;
+      }
+
+      button:hover {
+        transform: translateY(-3px);
+      }
+
+      button:active {
+        transform: scale(0.96);
+      }
+
+      button {
+        background: #00c853;
+        color: white;
+      }
+
+      .delete-btn {
+        background: #ff4d4d;
+      }
+
+      .delete-btn:hover {
+        background: #ff1f1f;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        overflow: hidden;
+        border-radius: 15px;
+      }
+
+      table thead {
+        background: #1f2937;
+        color: white;
+      }
+
+      table th {
+        padding: 15px;
+      }
+
+      table td {
+        padding: 15px;
+        text-align: center;
+        background: rgba(255, 255, 255, 0.9);
+      }
+
+      table tr:nth-child(even) td {
+        background: #f4f4f4;
+      }
+
+      table tr:hover td {
+        background: #e3f2fd;
+        color: #000;
+        transition: 0.3s;
+      }
+
+      .dark table tr:hover td {
+        background: #374151;
+        color: white;
+      }
+
+      #searchBox {
+        margin-bottom: 15px;
+      }
+
+      #chartContainer {
+        background: white;
+        border-radius: 20px;
+        padding: 20px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      canvas {
+        max-height: 400px;
+      }
+
+      .dark {
+        background: #121212;
+      }
+
+      .dark .card,
+      .dark .box {
+        background: #1e1e1e;
+        color: white;
+      }
+
+      .dark table td {
+        background: #2b2b2b;
+        color: white;
+      }
+
+      .dark table tr:nth-child(even) td {
+        background: #222;
+      }
+
+      .dark input {
+        background: #333;
+        color: white;
+      }
+
+      #themeBtn {
+        margin-bottom: 20px;
+      }
+
+      #toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: #00c853;
+        color: white;
+        padding: 15px 20px;
+        border-radius: 10px;
+        display: none;
+        z-index: 1000;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        animation: slideIn 0.4s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .dashboard {
+          flex-direction: column;
+        }
+
+        table {
+          font-size: 13px;
+        }
+
+        h1 {
+          font-size: 30px;
+        }
+
+        .box h2 {
+          font-size: 24px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Expense Tracker</h1>
+
+      <button id="themeBtn" onclick="toggleTheme()">🌙 Dark Mode</button>
+      <div class="dashboard">
+        <div class="box">
+          <h3>Total Income</h3>
+          <h2 id="income">₹0</h2>
+        </div>
+
+        <div class="box">
+          <h3>Total Expense</h3>
+          <h2 id="expense">₹0</h2>
+        </div>
+
+        <div class="box">
+          <h3>Balance</h3>
+          <h2 id="balance">₹0</h2>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Add Expense</h2>
+        <br />
+
+        <div class="form-group">
+          <input type="text" id="category" placeholder="Category" />
+        </div>
+
+        <div class="form-group">
+          <input type="number" id="amount" placeholder="Amount" />
+        </div>
+
+        <div class="form-group">
+          <input type="text" id="description" placeholder="Description" />
+        </div>
+
+        <div class="form-group">
+          <input type="date" id="expenseDate" />
+        </div>
+
+        <button onclick="addExpense()">Add Expense</button>
+      </div>
+
+      <div class="card">
+        <h2>Expense List</h2>
+        <br />
+
+        <table>
+          <thead>
+            <tr>
+              <th>S.No.</th>
+              <th>Category</th>
+              <th>Amount</th>
+              <th>Description</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+
+          <tbody id="expenseTable"></tbody>
+        </table>
+
+        <br />
+        <br />
+
+        <button onclick="togglePieChart()">Show Expense Analysis</button>
+
+        <div
+          id="chartContainer"
+          style="display: none; width: 600px; margin: 20px auto"
+        >
+          <canvas id="expensePieChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+      function toggleTheme() {
+        document.body.classList.toggle("dark");
+
+        const btn = document.getElementById("themeBtn");
+
+        if (document.body.classList.contains("dark")) {
+          btn.innerHTML = "☀️ Light Mode";
+        } else {
+          btn.innerHTML = "🌙 Dark Mode";
+        }
+      }
+
+      loadExpenses();
+
+      function addExpense() {
+        const expense = {
+          category: document.getElementById("category").value,
+          amount: document.getElementById("amount").value,
+          description: document.getElementById("description").value,
+          expenseDate: document.getElementById("expenseDate").value,
+        };
+
+        const url = window.editId
+          ? `http://localhost:8080/expense/${window.editId}`
+          : "http://localhost:8080/expense";
+
+        const method = window.editId ? "PUT" : "POST";
+
+        fetch(url, {
+          method: method,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(expense),
+        })
+          .then((response) => response.json())
+          .then(() => {
+            loadExpenses();
+
+            if (chartLoaded) {
+              loadPieChart();
+            }
+
+            alert("Expense added successfully!");
+
+            document.getElementById("category").value = "";
+            document.getElementById("amount").value = "";
+            document.getElementById("description").value = "";
+            document.getElementById("expenseDate").value = "";
+          });
+      }
+
+      window.editId = null;
+
+      function loadExpenses() {
+        fetch("http://localhost:8080/expense")
+          .then((response) => response.json())
+          .then((data) => {
+            let table = "";
+
+            let totalExpense = 0;
+
+            data.forEach((expense, index) => {
+              totalExpense += expense.amount;
+
+              table += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${expense.category}</td>
+                        <td>₹${expense.amount}</td>
+                        <td>${new Date(expense.expenseDate).toLocaleDateString()}</td>
+                        <td>${expense.description}</td>
+                        <td>
+                            <button onclick="editExpense(${expense.id})">
+                                Edit
+                            </button>
+                            <button class="delete-btn"
+                             onclick="deleteExpense(${expense.id})">
+                                Delete
+                            </button>
+
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById("expenseTable").innerHTML = table;
+
+            document.getElementById("expense").innerHTML = "₹" + totalExpense;
+
+            document.getElementById("income").innerHTML = "₹10000";
+
+            document.getElementById("balance").innerHTML =
+              "₹" + (10000 - totalExpense);
+          });
+      }
+
+      let chart;
+      let chartLoaded = false;
+
+      function togglePieChart() {
+        const container = document.getElementById("chartContainer");
+
+        if (container.style.display === "none") {
+          container.style.display = "block";
+
+          if (!chartLoaded) {
+            loadPieChart();
+            chartLoaded = true;
+          }
+        } else {
+          container.style.display = "none";
+        }
+      }
+
+      async function loadPieChart() {
+        const response = await fetch(
+          "http://localhost:8080/expense/category-analysis",
+        );
+
+        const data = await response.json();
+
+        const categories = [];
+        const amounts = [];
+
+        data.forEach((item) => {
+          categories.push(item[0]);
+          amounts.push(item[1]);
+        });
+
+        if (chart) {
+          chart.destroy();
+        }
+
+        chart = new Chart(document.getElementById("expensePieChart"), {
+          type: "pie",
+
+          data: {
+            labels: categories,
+
+            datasets: [
+              {
+                data: amounts,
+              },
+            ],
+          },
+        });
+      }
+
+      loadPieChart();
+
+      function editExpense(id) {
+        fetch("http://localhost:8080/expense/" + id)
+          .then((response) => response.json())
+          .then((expense) => {
+            document.getElementById("category").value = expense.category;
+
+            document.getElementById("amount").value = expense.amount;
+
+            document.getElementById("description").value = expense.description;
+
+            document.getElementById("expenseDate").value = expense.expenseDate;
+
+            window.editId = id;
+          });
+      }
+
+      function deleteExpense(id) {
+        fetch("http://localhost:8080/expense/" + id, {
+          method: "DELETE",
+        }).then(() => {
+          loadExpenses();
+
+          if (chartLoaded) {
+            loadPieChart();
+          }
+        });
+      }
+
+      function toggleChat() {
+        const box = document.getElementById("chatBox");
+
+        box.style.display = box.style.display === "block" ? "none" : "block";
+      }
+
+      async function sendMessage() {
+        const input = document.getElementById("userMessage");
+
+        const message = input.value;
+
+        document.getElementById("messages").innerHTML +=
+          `<p><b>You:</b> ${message}</p>`;
+
+        const response = await fetch("http://localhost:8080/chat", {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify(message),
+        });
+
+        const answer = await response.text();
+
+        document.getElementById("messages").innerHTML +=
+          `<p><b>Gemini:</b> ${answer}</p>`;
+
+        input.value = "";
+      }
+    </script>
+
+    <button id="chatBtn" onclick="toggleChat()">💬</button>
+
+    <div id="chatBox">
+      <div id="messages"></div>
+
+      <input id="userMessage" placeholder="Ask Gemini..." />
+
+      <button onclick="sendMessage()">Send</button>
+    </div>
+  </body>
+</html>
