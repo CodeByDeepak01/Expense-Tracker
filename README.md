@@ -117,7 +117,7 @@ CREATE DATABASE expense_tracker;
 Update `application.properties`
 
 ```properties
-spring.datasource.url=jdbc:mysql://localhost:3307/expense_tracker
+spring.datasource.url=jdbc:mysql://localhost:3306/expense_tracker
 spring.datasource.username=root
 spring.datasource.password=YOUR_PASSWORD
 ```
